@@ -13,10 +13,14 @@
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-redux": "^7.1.3",
     "react-scripts": "3.3.0",
+    "redux": "^4.0.4",
+    "redux-saga": "^1.1.3",
     "typescript": "~3.7.3"
   },
   "devDependencies": {
+    "@types/react-redux": "^7.1.5",
     "@typescript-eslint/eslint-plugin": "^2.10.0",
     "@typescript-eslint/parser": "^2.10.0",
     "eslint": "^6.7.2",
@@ -29,20 +33,26 @@
     "eslint-plugin-react": "^7.17.0",
     "lint-staged": "^9.5.0",
     "prettier": "^1.18.2",
+    "redux-devtools-extension": "^2.13.8",
     "stylelint": "^11.0.0",
     "stylelint-order": "^3.1.1",
-    "stylelint-prettier": "^1.1.1"
+    "stylelint-prettier": "^1.1.1",
+    "typesafe-actions": "^5.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "yarn lint:styles && yarn lint:ts && yarn prettier",
+    "lint:ts": "eslint --fix src/**/*.ts?(x)",
+    "lint:styles": "stylelint src/**/*.scss --syntax scss --fix",
+    "prettier": "prettier --write src/**/*.ts?(x)"
   },
   "lint-staged": {
     ".(ts,tsx)": [
-      "eslint --fix packages/**/*.ts?(x)",
-      "prettier --write packages/**/*.ts?(x)",
+      "eslint --fix src/**/*.ts?(x)",
+      "prettier --write src/**/*.ts?(x)",
       "git add ."
     ],
     ".scss": [
