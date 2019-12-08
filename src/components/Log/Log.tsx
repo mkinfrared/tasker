@@ -2,6 +2,7 @@
 import React from "react";
 
 import { LogProps } from "components/Log/Log.type";
+import css from "components/Log/Log.module.scss";
 
 const Log: React.FC<LogProps> = ({
   buttonNumber,
@@ -9,10 +10,12 @@ const Log: React.FC<LogProps> = ({
   displayTimestamp,
   clickTimestamp
 }) => {
+  const seconds = delay / 1000;
+
   return (
-    <p>
+    <p className={css.Log}>
       <span>{displayTimestamp}: </span>
-      Button {buttonNumber} was pressed with {delay}s timeout at{" "}
+      Button {buttonNumber} was pressed with {seconds}s timeout at{" "}
       {clickTimestamp}
     </p>
   );

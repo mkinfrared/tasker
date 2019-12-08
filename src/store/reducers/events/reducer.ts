@@ -1,13 +1,15 @@
 import { Reducer } from "redux";
 
-import { Events } from "store/reducers/events/types";
+import { EventActionTypes, Events } from "store/reducers/events/types";
 
 const initialState: Events = [];
 
-const reducer: Reducer = (state = initialState, action) => {
-  const { type } = action;
+const reducer: Reducer<Events> = (state = initialState, action) => {
+  const { type, payload } = action;
 
   switch (type) {
+    case EventActionTypes.EVENT_EXECUTED:
+      return [...state, payload];
     default:
       return state;
   }

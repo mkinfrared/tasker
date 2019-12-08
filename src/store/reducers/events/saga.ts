@@ -16,7 +16,10 @@ function* executeEventInPool() {
     console.log(event);
 
     yield put(
-      addEventToStore({ ...event, displayTimestamp: Date.now().toString() })
+      addEventToStore({
+        ...event,
+        displayTimestamp: new Date().toLocaleString()
+      })
     );
   }
 
