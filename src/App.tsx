@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Log from "components/Log";
-import { addEventToPool } from "store/reducers/events/actions";
+import { addEventToPool, resetEvents } from "store/reducers/events/actions";
 import getEventsSelector from "store/reducers/events/selectors";
 import Button from "ui/Button";
 import generateRandomNumber from "utils/generateRandomNumber";
@@ -21,9 +21,14 @@ const App: React.FC = () => {
     dispatch(addEventToPool(event));
   };
 
+  const handleResetClick = () => {
+    dispatch(resetEvents());
+  };
+
   const logs = events.map(
-    ({ displayTimestamp, buttonNumber, clickTimestamp, delay }) => (
+    ({ displayTimestamp, buttonNumber, clickTimestamp, delay, id }) => (
       <Log
+        key={id}
         displayTimestamp={displayTimestamp}
         buttonNumber={buttonNumber}
         delay={delay}
@@ -42,7 +47,7 @@ const App: React.FC = () => {
       </div>
       <div className={css.logger}>{logs}</div>
       <div className={css.resetGroup}>
-        <Button clickHandler={handleButtonClick(3)}>Reset</Button>
+        <Button clickHandler={handleResetClick}>Reset</Button>
       </div>
     </div>
   );

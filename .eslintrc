@@ -28,6 +28,7 @@
     "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
     "react/prop-types": 0,
     "react/button-has-type": 0,
+    "react/jsx-key": [2, { "checkFragmentShorthand": true }],
     "comma-dangle": ["error", "never"],
     "linebreak-style": "off",
     "no-console": "error",

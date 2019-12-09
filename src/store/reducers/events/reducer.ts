@@ -10,6 +10,8 @@ const reducer: Reducer<Events> = (state = initialState, action) => {
   switch (type) {
     case EventActionTypes.EVENT_EXECUTED:
       return [...state, payload];
+    case EventActionTypes.RESET_EVENTS_SUCCESS:
+      return initialState;
     default:
       return state;
   }

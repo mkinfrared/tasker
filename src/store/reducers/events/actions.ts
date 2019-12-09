@@ -8,4 +8,6 @@ const addEventToPool = (event: Event) =>
 const addEventToStore = (event: LogEvent) =>
   action(EventActionTypes.EVENT_EXECUTED, event);
 
-export { addEventToPool, addEventToStore };
+const resetEvents = () => action(EventActionTypes.RESET_EVENTS);
+
+export { addEventToPool, addEventToStore, resetEvents };

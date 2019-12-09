@@ -1,3 +1,3 @@
 import { LogEvent } from "store/reducers/events/types";
 
-export interface LogProps extends LogEvent {}
+export interface LogProps extends Omit<LogEvent, "id"> {}
