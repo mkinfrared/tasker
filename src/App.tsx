@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Log from "components/Log";
@@ -13,30 +13,38 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
   const events = useSelector(getEventsSelector);
 
-  const handleButtonClick = (buttonNumber: number) => () => {
-    const delay = generateRandomNumber(1000, 10000);
-    const clickTimestamp = new Date().toLocaleString();
-    const event = { delay, clickTimestamp, buttonNumber };
-
-    dispatch(addEventToPool(event));
-  };
-
   const handleResetClick = () => {
     dispatch(resetEvents());
   };
 
-  const logs = events.map(
-    ({ displayTimestamp, buttonNumber, clickTimestamp, delay, id }) => (
-      <Log
-        key={id}
-        displayTimestamp={displayTimestamp}
-        buttonNumber={buttonNumber}
-        delay={delay}
-        clickTimestamp={clickTimestamp}
-      />
-    )
+  const handleButtonClick = useCallback(
+    (buttonNumber: number) => () => {
+      const delay = generateRandomNumber(1000, 2000);
+      const clickTimestamp = new Date().toLocaleString();
+      const event = { delay, clickTimestamp, buttonNumber };
+
+      dispatch(addEventToPool(event));
+    },
+    [dispatch]
   );
 
+  const logs = useMemo(
+    () =>
+      events.map(
+        ({ displayTimestamp, buttonNumber, clickTimestamp, delay, id }) => (
+          <Log
+            key={id}
+            displayTimestamp={displayTimestamp}
+            buttonNumber={buttonNumber}
+            delay={delay}
+            clickTimestamp={clickTimestamp}
+          />
+        )
+      ),
+    [events]
+  );
+
+  // @ts-ignore
   return (
     <div className={css.App}>
       <h1>Click Logger</h1>

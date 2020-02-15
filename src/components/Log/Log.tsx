@@ -21,4 +21,4 @@ const Log: React.FC<LogProps> = ({
   );
 };
 
-export default Log;
+export default React.memo(Log);

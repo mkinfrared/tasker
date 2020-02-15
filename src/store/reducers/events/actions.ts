@@ -10,4 +10,6 @@ const addEventToStore = (event: LogEvent) =>
 
 const resetEvents = () => action(EventActionTypes.RESET_EVENTS);
 
-export { addEventToPool, addEventToStore, resetEvents };
+const resetEventsSuccess = () => action(EventActionTypes.RESET_EVENTS_SUCCESS);
+
+export { addEventToPool, addEventToStore, resetEvents, resetEventsSuccess };

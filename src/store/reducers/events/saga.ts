@@ -1,59 +1,55 @@
 import {
+  actionChannel,
   all,
-  cancel,
+  call,
   delay,
+  flush,
   fork,
   put,
+  race,
   take,
-  takeLatest
+  takeEvery
 } from "redux-saga/effects";
 import uuid from "uuid/v4";
-import { Task } from "redux-saga";
+import { FlushableChannel } from "redux-saga";
 
-import { addEventToPool, addEventToStore } from "store/reducers/events/actions";
-import { Event, EventActionTypes } from "store/reducers/events/types";
+import {
+  addEventToPool,
+  addEventToStore,
+  resetEventsSuccess
+} from "store/reducers/events/actions";
+import { EventActionTypes } from "store/reducers/events/types";
 
-let eventPool: Event[] = [];
-let isExecuting = false;
-
-function* cancelSaga(task: Task) {
-  yield cancel(task);
-  eventPool = [];
-  isExecuting = false;
-  yield put({ type: EventActionTypes.RESET_EVENTS_SUCCESS });
-}
-
-function* executeEventInPool() {
-  while (eventPool.length > 0) {
-    const event = eventPool.shift();
-    const id = uuid();
-    const displayTimestamp = new Date().toLocaleString();
-
-    yield delay(event!.delay);
-    yield put(addEventToStore({ ...event!, id, displayTimestamp }));
-  }
-
-  isExecuting = false;
-}
-
-function* addEventToPoolSaga(action: ReturnType<typeof addEventToPool>) {
+function* executeEventInPool(action: ReturnType<typeof addEventToPool>) {
   const { payload } = action;
+  const id = uuid();
+  const displayTimestamp = new Date().toLocaleString();
 
-  eventPool.push(payload);
+  const result = yield race({
+    continue: delay(payload.delay),
+    cancel: take(EventActionTypes.RESET_EVENTS)
+  });
 
-  if (isExecuting) return;
+  if (result.continue) {
+    yield put(addEventToStore({ ...payload, id, displayTimestamp }));
+  }
+}
 
-  isExecuting = true;
-
-  yield executeEventInPool();
+function* resetEventsSaga(channel?: FlushableChannel<any>) {
+  if (channel) {
+    yield flush(channel);
+  }
+  yield put(resetEventsSuccess());
 }
 
 function* watchAddEventToPoolSaga() {
-  while (true) {
-    const action = yield take(EventActionTypes.ADD_EVENT_TO_POOL);
-    const task = yield fork(addEventToPoolSaga, action);
+  const channel = yield actionChannel(EventActionTypes.ADD_EVENT_TO_POOL);
 
-    yield takeLatest(EventActionTypes.RESET_EVENTS, cancelSaga, task);
+  while (true) {
+    const action = yield take(channel);
+    yield call(executeEventInPool, action);
+    // @ts-ignore
+    yield takeEvery(EventActionTypes.RESET_EVENTS, resetEventsSaga, channel);
   }
 }
 
